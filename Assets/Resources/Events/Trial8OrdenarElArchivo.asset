@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 485baae58b7e42618c4633d544262da5, type: 3}
+  m_Name: Trial8OrdenarElArchivo
+  m_EditorClassIdentifier: 
+  title: Ordenar el Archivo
+  typeCode: 3
+  difficulty: 6
+  flavour: "Las fichas est\xE1n ordenadas alfab\xE9ticamente y por colores, pero
+    necesitamos reordenarlas por fecha y c\xF3digo cliente. S\xF3lo son 10 fichas
+    al d\xEDa durante los \xFAltimos 10 a\xF1os."
+  eventImage: {fileID: -953950854697054943, guid: c807acf6505b7a4429b8316055eb12c5, type: 3}
+  firstCode: 4
+  passCode: 1
+  failCode: 0
+  lastCode: 5
+  respiteCode: 0

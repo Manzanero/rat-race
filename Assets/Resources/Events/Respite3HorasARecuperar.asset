@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 485baae58b7e42618c4633d544262da5, type: 3}
+  m_Name: Respite3HorasARecuperar
+  m_EditorClassIdentifier: 
+  title: Horas a Recuperar
+  typeCode: 0
+  difficulty: 0
+  flavour: "Si trabajara entre noviembre y marzo unas 130 horas semanales, \xA1podr\xEDa
+    recuperar estos d\xEDas antes de semana santa!"
+  eventImage: {fileID: -4271859720093611180, guid: da540fcb43ef97542900d142375d8f8b, type: 3}
+  firstCode: 0
+  passCode: 0
+  failCode: 0
+  lastCode: 0
+  respiteCode: 4

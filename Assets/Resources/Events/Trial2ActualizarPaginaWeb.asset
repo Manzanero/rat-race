@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 485baae58b7e42618c4633d544262da5, type: 3}
+  m_Name: Trial2ActualizarPaginaWeb
+  m_EditorClassIdentifier: 
+  title: "Actualizar P\xE1gina Web"
+  typeCode: 1
+  difficulty: 6
+  flavour: "En la pesta\xF1a \"Administraci\xF3n\", vas a solicitar servicio, luego
+    a inform\xE1tica, y si buscas el bot\xF3n de solicitar permiso de edici\xF3n,
+    y te mandan un enlace para crear un usuario."
+  eventImage: {fileID: -4127649421956458952, guid: c807acf6505b7a4429b8316055eb12c5, type: 3}
+  firstCode: 4
+  passCode: 1
+  failCode: 0
+  lastCode: 5
+  respiteCode: 0

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d4160fb47f027143b453fe37c9b3b12, type: 3}
+  m_Name: Char3LaDelegadaSindical
+  m_EditorClassIdentifier: 
+  title: La Delegada Sindical
+  flavour: "\xA1Proletarios del mundo, un\xEDos! Por cierto, jefe, \xBFle he comentado
+    que mi primo busca trabajo?"
+  image: {fileID: 4399163698942508663, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
+  maxMesses: 5
+  tech: -1
+  cheek: 1
+  tedium: 1
+  ability: Una vez por partida, puede obligar a un rival a repetir una tirada de
+    morro.
