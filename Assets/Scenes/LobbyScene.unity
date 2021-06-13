@@ -1014,7 +1014,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &602539744
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2247,6 +2247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1826632621}
   - component: {fileID: 1826632620}
+  - component: {fileID: 1826632622}
   m_Layer: 0
   m_Name: StartManager
   m_TagString: Untagged
@@ -2299,6 +2300,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1826632622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826632619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e56c2066eff9f34c812865afcc473c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2070492172
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2822,8 +2835,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3988,7 +4001,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3785644546861196300, guid: b9a4cf5d0c1d3af44bffa5303caf6cfb, type: 3}
+  m_Sprite: {fileID: -5932111826092600509, guid: b9a4cf5d0c1d3af44bffa5303caf6cfb, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1

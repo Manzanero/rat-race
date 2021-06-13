@@ -54,6 +54,7 @@ public class ServerManager : MonoBehaviour
     
     private void ReadMessages()
     {
+        var newMessages = messagesToRead.Where(a => !a.read).ToList();
         foreach (var message in messagesToRead)
             ResolveMessage(message);
 
@@ -82,17 +83,14 @@ public class ServerManager : MonoBehaviour
         {
             switch (action)
             {
-                case MessageTypes.Join:
-                    var character = message.payload[2];
-                    break;
                 case MessageTypes.Roll:
                     var result = int.Parse(message.payload[2]);
                     opponent.dice.Throw(result);
                     break;
                 case MessageTypes.Ready:
                     var totalResult = int.Parse(message.payload[2]);
-                    opponent.Result = totalResult;
-                    opponent.Bonus = totalResult - opponent.dice.result;
+                    opponent.secretResult = totalResult;
+                    opponent.secretBonus = totalResult - opponent.dice.result;
                     opponent.readyToggle.isOn = true;
                     break;
                 case MessageTypes.Rewards:

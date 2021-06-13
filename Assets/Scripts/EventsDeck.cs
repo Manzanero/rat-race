@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EventsDeck : MonoBehaviour
 {
-    private const int TotalCards = 9;
+    private const int TotalCards = 16;
     
     public GameObject topCard;
     public RectTransform eventCardsHolder;

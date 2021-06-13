@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
     // Game Variables
     public static bool Debug = true;
     public static Player LocalPlayer;
+    public static List<Player> RemotePlayers = new List<Player>();
     public static List<OpponentCard> OpponentsCards = new List<OpponentCard>();
     public static List<TreasureCard> TreasureCards = new List<TreasureCard>();
 
@@ -270,11 +271,15 @@ public class GameManager : MonoBehaviour
         readyToggle.isOn = false;
 
         foreach (Transform child in eventCardsHolder) Destroy(child.gameObject);
-
         characterCard.LoadPlayer(LocalPlayer);
 
         foreach (Transform child in opponentsHolder) Destroy(child.gameObject);
-        if (!OpponentsCards.Any()) OpponentsCards = TestOpponents();
+        if (!OpponentsCards.Any())
+            if (!RemotePlayers.Any()) OpponentsCards = TestOpponents();
+            else
+                foreach (var remotePlayer in RemotePlayers)
+                    OpponentsCards.Add(Instantiate(opponentPrefab, opponentsHolder).GetComponent<OpponentCard>()
+                        .LoadPlayer(remotePlayer));
 
         resolutionAnimator = resolutionGo.GetComponent<Animator>();
     }
@@ -325,20 +330,20 @@ public class GameManager : MonoBehaviour
             isDiceThrown = false;
             isThinkingPhase = true;
 
-            if (Debug)
-            {
-                foreach (var opponent in OpponentsCards)
-                {
-                    opponent.dice.Throw();
-                    opponent.readyToggle.isOn = true;
-                }
-            }
+            // if (Debug)
+            // {
+            //     foreach (var opponent in OpponentsCards)
+            //     {
+            //         opponent.dice.Throw();
+            //         opponent.readyToggle.isOn = true;
+            //     }
+            // }
         }
 
         if (isThinkingPhase)
         {
             opponentsResult.Clear();
-            
+
             Bonus = eventsDeck.currentCard.EventTypeCode switch
             {
                 EventCard.EventTypes.Tech => LocalPlayer.tech,
@@ -371,13 +376,13 @@ public class GameManager : MonoBehaviour
             passMedalGo.SetActive(isPassed);
             failMedalGo.SetActive(!isPassed);
             lastMedalGo.SetActive(isMin);
-            
+
             if (eventsDeck.currentCard.EventTypeCode != EventCard.EventTypes.Respite)
             {
                 useFavourButton.interactable = FavoursToUse < Favours;
                 unUseFavourButton.interactable = FavoursToUse > 0;
             }
-            
+
             if (Result >= opponentsResult.Max()) firstMedalGo.SetActive(true);
 
             if (OpponentsCards.All(x => x.dice.result != 0) && dice.result != 0)
@@ -548,7 +553,7 @@ public class GameManager : MonoBehaviour
         Messes += 1;
         FreeDays -= 4;
     }
-    
+
     private IEnumerator TrialResolution()
     {
         isWaitingOpponentPhase = false;
@@ -563,6 +568,17 @@ public class GameManager : MonoBehaviour
         foreach (Transform child in failHolder) Destroy(child.gameObject);
         foreach (Transform child in lastHolder) Destroy(child.gameObject);
 
+        opponentsResult.Clear();
+        opponentsResult.Add(Result);
+        foreach (var opponentCard in OpponentsCards)
+        {
+            var previousBonus = opponentCard.Bonus;
+            opponentCard.Bonus = opponentCard.secretBonus;
+            opponentCard.Favours -= opponentCard.secretBonus - previousBonus;
+            opponentCard.Result = opponentCard.secretResult;
+            opponentsResult.Add(opponentCard.Result);
+        }
+        
         var isMax = Result >= opponentsResult.Max();
         var isPassed = Result >= eventsDeck.currentCard.Difficulty;
         var isMin = Result <= opponentsResult.Min();

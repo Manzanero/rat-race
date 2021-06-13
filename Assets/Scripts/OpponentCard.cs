@@ -88,6 +88,9 @@ public class OpponentCard : MonoBehaviour
         get => treasures;
         set { remotePlayer.treasures = treasures = value; treasuresText.text = value.ToString(); }
     }
+
+    public int secretBonus;
+    public int secretResult;
     
     private int treasures;
     

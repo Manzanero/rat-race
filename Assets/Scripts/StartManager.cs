@@ -5,6 +5,7 @@ using System.Linq;
 using Start;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -176,17 +177,17 @@ public class StartManager : MonoBehaviour
         leaveButton.interactable = true;
         deleteButton.interactable = ImHost;
         beginButton.interactable = ImHost;
-        
+
         selectionPanel.SetActive(true);
         while (selectionPanel.activeSelf) yield return null;
-        
+
         var urlChars = $"{Server.BaseUrl}/lands/{ServerManager.Land}/realms/{roomInput.text}/properties/CHARACTER";
         var data = new RealmPropertiesData
             {players = new List<string> {userInput.text}, values = new List<string> {charIndex.ToString()}};
         var requestChars = Server.PostRequest(urlChars, data);
         while (!requestChars.isDone) yield return null;
         Server.GetResponse<RealmPropertiesResponse>(requestChars);
-        
+
         var url2 = $"{Server.BaseUrl}/lands/{ServerManager.Land}/realms/{roomInput.text}/properties?name=CHARACTER";
         var request2 = Server.GetRequest(url2);
         while (!request2.isDone) yield return null;
@@ -202,7 +203,7 @@ public class StartManager : MonoBehaviour
     {
         Server.SetCredentials(userInput.text, passInput.text);
         var roomName = roomInput.text;
-        
+
         foreach (Transform child in playersParent) Destroy(child.gameObject);
 
         loadingImage.SetActive(true);
@@ -241,9 +242,9 @@ public class StartManager : MonoBehaviour
     {
         Server.SetCredentials(userInput.text, passInput.text);
         var roomName = roomInput.text;
-        
+
         foreach (Transform child in playersParent) Destroy(child.gameObject);
-        
+
         loadingImage.SetActive(true);
         StartCoroutine(DeleteRealmRequest(roomName));
     }
@@ -284,7 +285,6 @@ public class StartManager : MonoBehaviour
 
     private void Awake()
     {
-        
         GameManager.LocalPlayer ??= GameManager.TestPlayer();
         selectionPanel.SetActive(false);
         selectButton.onClick.AddListener(delegate { selectionPanel.SetActive(false); });
@@ -301,6 +301,14 @@ public class StartManager : MonoBehaviour
         leaveButton.interactable = false;
         deleteButton.interactable = false;
         beginButton.interactable = false;
+        beginButton.onClick.AddListener(Begin);
+    }
+
+    private void Begin()
+    {
+        loadingImage.SetActive(true);
+        var urlChars = $"{Server.BaseUrl}/lands/{ServerManager.Land}/realms/{roomInput.text}/properties/STARTED";
+        Server.PostRequest(urlChars, new RealmPropertiesData {values = new List<string> {"true"}});
     }
 
     private void RefreshLobby()
@@ -360,7 +368,38 @@ public class StartManager : MonoBehaviour
             if (response2.properties[0].value != "true") continue;
 
             Debug.Log("Starting");
-            // loadingImage.SetActive(true);
+            loadingImage.SetActive(true);
+
+            var localCharacterBlueprint = chars[charIndex];
+            GameManager.LocalPlayer = new Player
+            {
+                name = userInput.text,
+                characterBlueprint = localCharacterBlueprint,
+                maxMesses = localCharacterBlueprint.maxMesses,
+                tech = localCharacterBlueprint.tech,
+                cheek = localCharacterBlueprint.cheek,
+                tedium = localCharacterBlueprint.tedium,
+                abilityUsed = false
+            };
+            foreach (var item in playerItems)
+            {
+                if (item.PlayerName == userInput.text) continue;
+                var remoteCharacterBlueprint = chars[item.Character];
+                GameManager.RemotePlayers.Add(new Player
+                {
+                    name = item.PlayerName,
+                    characterBlueprint = remoteCharacterBlueprint,
+                    maxMesses = remoteCharacterBlueprint.maxMesses,
+                    tech = remoteCharacterBlueprint.tech,
+                    cheek = remoteCharacterBlueprint.cheek,
+                    tedium = remoteCharacterBlueprint.tedium,
+                    abilityUsed = false
+                });
+            }
+
+            ServerManager.Realm = roomInput.text;
+
+            SceneManager.LoadScene(1);
         }
     }
 

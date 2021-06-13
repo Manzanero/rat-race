@@ -19,6 +19,8 @@ namespace Start
         public Sprite character6;
         public Sprite character7;
 
+        private int playerCharacter;
+
         public PlayerItem LoadItem(string playerName, int character)
         {
             playerNameText.text = playerName;
@@ -34,7 +36,11 @@ namespace Start
                 7 => character7,
                 _ => throw new ArgumentOutOfRangeException(nameof(character), character, null)
             };
+            playerCharacter = character;
             return this;
         }
+
+        public string PlayerName => playerNameText.text;
+        public int Character => playerCharacter;
     }
 }
