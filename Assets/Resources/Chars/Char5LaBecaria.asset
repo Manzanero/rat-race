@@ -15,7 +15,7 @@ MonoBehaviour:
   title: La Becaria
   flavour: "A mi ni siquiera me paga, mientras me den los cr\xE9ditos por mi como
     si la empresa se hunde."
-  image: {fileID: -932655143141671623, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
+  image: {fileID: 2632353194548004596, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
   maxMesses: 3
   tech: 2
   cheek: -1

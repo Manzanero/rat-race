@@ -15,7 +15,7 @@ MonoBehaviour:
   title: El Casi Jubilado
   flavour: "Llevo tanto a\xF1os aqu\xED que despedirme dejar\xEDa al negocio en bancarrota.
     Devu\xE9lveme mi crucigrama."
-  image: {fileID: -932655143141671623, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
+  image: {fileID: -1894902091024081112, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
   maxMesses: 6
   tech: -1
   cheek: 0

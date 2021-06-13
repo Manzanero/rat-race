@@ -71,6 +71,11 @@ public class GameManager : MonoBehaviour
     public static List<OpponentCard> OpponentsCards = new List<OpponentCard>();
     public static List<TreasureCard> TreasureCards = new List<TreasureCard>();
 
+    public static OpponentCard GetOpponentCardByPlayerName(string playerName)
+    {
+        return OpponentsCards.FirstOrDefault(x => x.remotePlayer.name == playerName);
+    }
+
     public int FreeDays
     {
         get => freeDays;
@@ -175,7 +180,7 @@ public class GameManager : MonoBehaviour
         lastMedalGo.SetActive(activeLastMedal);
     }
 
-    private static Player TestPlayer()
+    public static Player TestPlayer()
     {
         var testCharacterBlueprint = FindResource<CharacterBlueprint>("Chars/Char0ElInformatico");
         return new Player
@@ -235,7 +240,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         LocalPlayer ??= TestPlayer();
         FreeDays = 0;
-        Favours = 3;
+        Favours = 0;
         Messes = 0;
         MaxMesses = LocalPlayer.maxMesses;
         objectsButton.onClick.AddListener(delegate { UnityEngine.Debug.Log("Object selection"); });
@@ -393,7 +398,7 @@ public class GameManager : MonoBehaviour
             unUseFavourButton.interactable = false;
             readyButton.interactable = false;
 
-            if (OpponentsCards.All(x => x.dice.result != 0))
+            if (OpponentsCards.All(x => x.readyToggle.isOn))
             {
                 StartCoroutine(eventsDeck.currentCard.EventTypeCode == EventCard.EventTypes.Respite
                     ? RespiteResolution()
@@ -543,8 +548,7 @@ public class GameManager : MonoBehaviour
         Messes += 1;
         FreeDays -= 4;
     }
-
-
+    
     private IEnumerator TrialResolution()
     {
         isWaitingOpponentPhase = false;

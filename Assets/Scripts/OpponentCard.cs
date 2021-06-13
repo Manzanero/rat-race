@@ -17,6 +17,8 @@ public class OpponentCard : MonoBehaviour
     public TMP_Text treasuresText;
     public Toggle readyToggle;
 
+    public Player remotePlayer;
+    
     public int Bonus
     {
         get => bonus;
@@ -32,9 +34,7 @@ public class OpponentCard : MonoBehaviour
     }
     
     private int result;
-    
-    public Player remotePlayer;
-    
+
     public int Tech
     {
         get => tech;
@@ -114,4 +114,5 @@ public class OpponentCard : MonoBehaviour
         Tedium = characterBlueprint.tedium;
         return this;
     }
+    
 }

@@ -23,6 +23,13 @@ public class Dice : MonoBehaviour
         topFace.sprite = faces[(result - 1) * 4 + Random.Range(0, 4)];
     }
 
+    public void Throw(int forceResult)
+    {
+        topFace.enabled = true;
+        result = forceResult;
+        topFace.sprite = faces[(result - 1) * 4 + Random.Range(0, 4)];
+    }
+
     public void PickUp()
     {
         topFace.enabled = false;

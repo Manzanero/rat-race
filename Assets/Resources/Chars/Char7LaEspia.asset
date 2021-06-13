@@ -15,7 +15,7 @@ MonoBehaviour:
   title: "La Esp\xEDa"
   flavour: "\xBFAs\xED que Fern\xE1ndez te dijo que hab\xEDan cancelado el partido?
     \xBFY te lo cre\xEDste? Oh, pobrecillo."
-  image: {fileID: -932655143141671623, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
+  image: {fileID: -4819999113231035342, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
   maxMesses: 3
   tech: 1
   cheek: 2

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d4160fb47f027143b453fe37c9b3b12, type: 3}
-  m_Name: Char4ElEnviadoDeAlemania
+  m_Name: Char4ElEnviadoAleman
   m_EditorClassIdentifier: 
-  title: El Enviado De Alemania
+  title: "El Enviado Alem\xE1n"
   flavour: "La tortilla sin cebolla ni es tortilla ni es... \xBFQu\xE9? \xBFTrabajo?
     Uh, sorry, mi no habla bien idiome spaniol sorry tsch\xFCss!"
-  image: {fileID: -932655143141671623, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
+  image: {fileID: 7466458595277473521, guid: 8d5f46ad634132a4abd64b6620da92ce, type: 3}
   maxMesses: 5
   tech: 1
   cheek: 1
