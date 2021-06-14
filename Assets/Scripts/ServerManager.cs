@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class ServerManager : MonoBehaviour
 {
-    public List<Msg> messagesToRead = new List<Msg>();
-    public List<Msg> messagesToSend = new List<Msg>();
+    public static readonly List<Msg> MessagesToRead = new List<Msg>();
+    public static readonly List<Msg> MessagesToSend = new List<Msg>();
     
     [Serializable]
     public class Msg
@@ -15,6 +15,12 @@ public class ServerManager : MonoBehaviour
         public string topic;
         public List<string> payload;
         public bool read;
+    }
+
+    [Serializable]
+    private class MsgData
+    {
+        public List<Msg> messages = new List<Msg>();
     }
 
     [Serializable]
@@ -29,46 +35,69 @@ public class ServerManager : MonoBehaviour
     public static string RealmUrl;
     
     private string fromDate;
-    private readonly object shareActionsFrequency = new WaitForSecondsRealtime(1f);
+    private readonly object receiveMessagesFrequency = new WaitForSecondsRealtime(1f);
+    private readonly object sendMessagesFrequency = new WaitForSecondsRealtime(1f);
     
     private IEnumerator ReceiveMessages()
     {
         while (Server.ServerReady)
         {
-            yield return shareActionsFrequency;
+            yield return receiveMessagesFrequency;
 
-            var url = $"{RealmUrl}/receive?topic=actions&from={fromDate}&persistence=60";
+            var url = $"{RealmUrl}/receive?topic=actions&from={fromDate}&persistence=0";
             var request = Server.GetRequest(url);
             while (!request.isDone)
                 yield return null;
             
             var response = Server.GetResponse<MsgResponse>(request);
             if (!response)
+            {
+                Debug.LogError(response.message);
                 continue;
+            }
             
-            messagesToRead.AddRange(response.messages);
+            MessagesToRead.AddRange(response.messages);
             fromDate = response.date;
         }
     }
     
+    private IEnumerator SendMessages()
+    {
+        while (Server.ServerReady)
+        {
+            yield return sendMessagesFrequency;
+            
+            if (!MessagesToSend.Any()) continue;
+
+            var messages = MessagesToSend.ToList();
+            var data = new MsgData {messages = messages};
+            MessagesToSend.Clear();
+            
+            var url = $"{RealmUrl}/publish";
+            var request = Server.PutRequest(url, data);
+            while (!request.isDone)
+                yield return null;
+            
+            Server.GetResponse<MsgResponse>(request, false);
+        }
+    }
     
     private void ReadMessages()
     {
-        var newMessages = messagesToRead.Where(a => !a.read).ToList();
-        foreach (var message in messagesToRead)
+        var newMessages = MessagesToRead.Where(a => !a.read).ToList();
+        foreach (var message in newMessages)
             ResolveMessage(message);
 
-        var actionsToDelete = messagesToRead.Where(a => a.read).ToList();
+        var actionsToDelete = MessagesToRead.Where(a => a.read).ToList();
         if (actionsToDelete.Any())
-            messagesToRead.Remove(actionsToDelete[0]);
+            MessagesToRead.Remove(actionsToDelete[0]);
     }
 
     public static class MessageTypes
     {
-        public const string Join = "Join";
         public const string Roll = "Roll";
         public const string Ready = "Ready";
-        public const string Rewards = "Rewards";
+        public const string Status = "Status";
         public const string Object = "Object";
         public const string Ability = "Ability";
     }
@@ -92,8 +121,9 @@ public class ServerManager : MonoBehaviour
                     opponent.secretResult = totalResult;
                     opponent.secretBonus = totalResult - opponent.dice.result;
                     opponent.readyToggle.isOn = true;
+                    opponent.remotePlayer.inNewTurn = false;
                     break;
-                case MessageTypes.Rewards:
+                case MessageTypes.Status:
                     var freeDays = int.Parse(message.payload[2]);
                     var favours = int.Parse(message.payload[3]);
                     var messes = int.Parse(message.payload[4]);
@@ -102,6 +132,7 @@ public class ServerManager : MonoBehaviour
                     opponent.Favours = favours;
                     opponent.Messes = messes;
                     opponent.Treasures = treasures;
+                    opponent.remotePlayer.inNewTurn = true;
                     break;
                 case MessageTypes.Object:
                     var treasureName = message.payload[2];
@@ -125,12 +156,12 @@ public class ServerManager : MonoBehaviour
 
     private void Start()
     {
-        Server.SetCredentials("admin", "admin");
         Server.ServerReady = true;
         
         RealmUrl = $"{Server.BaseUrl}/lands/{Land}/realms/{Realm}";
         fromDate = GameManager.NowIsoDate();
         StartCoroutine(ReceiveMessages());
+        StartCoroutine(SendMessages());
     }
 
     private void Update()

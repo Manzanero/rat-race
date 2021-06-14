@@ -266,6 +266,8 @@ public class GameManager : MonoBehaviour
         {
             readyToggle.isOn = true;
             isWaitingOpponentPhase = true;
+            ServerManager.MessagesToSend.Add(new ServerManager.Msg
+                {topic = "actions", payload = new List<string> {"Ready", LocalPlayer.name, Result.ToString()}});
         });
         readyButton.interactable = false;
         readyToggle.isOn = false;
@@ -305,6 +307,25 @@ public class GameManager : MonoBehaviour
 
         if (isNewTurn)
         {
+            if (!LocalPlayer.inNewTurn)
+            {
+                LocalPlayer.inNewTurn = true;
+            
+                ServerManager.MessagesToSend.Add(new ServerManager.Msg
+                {topic = "actions", payload = new List<string>
+                {
+                    "Status", 
+                    LocalPlayer.name, 
+                    FreeDays.ToString(),
+                    Favours.ToString(),
+                    Messes.ToString(),
+                    TreasureCards.Count.ToString()
+                }});
+            }
+            
+            if (!OpponentsCards.All(x => x.remotePlayer.inNewTurn))
+                return;
+                
             eventsDeck.NewCard();
             if (eventsDeck.currentCard.EventTypeCode != EventCard.EventTypes.Respite)
             {
@@ -320,24 +341,9 @@ public class GameManager : MonoBehaviour
             readyButton.interactable = false;
             readyToggle.isOn = false;
 
-            foreach (var opponent in OpponentsCards)
-            {
-                opponent.readyToggle.isOn = false;
-                opponent.dice.PickUp();
-            }
-
             isNewTurn = false;
             isDiceThrown = false;
             isThinkingPhase = true;
-
-            // if (Debug)
-            // {
-            //     foreach (var opponent in OpponentsCards)
-            //     {
-            //         opponent.dice.Throw();
-            //         opponent.readyToggle.isOn = true;
-            //     }
-            // }
         }
 
         if (isThinkingPhase)
@@ -397,6 +403,8 @@ public class GameManager : MonoBehaviour
 
         if (isWaitingOpponentPhase)
         {
+            LocalPlayer.inNewTurn = false;
+            
             objectsButton.interactable = false;
             throwButton.interactable = false;
             useFavourButton.interactable = false;
@@ -495,7 +503,13 @@ public class GameManager : MonoBehaviour
 
         while (!respiteButtons.TrueForAll(x => !x.interactable))
             yield return null;
-
+        
+        foreach (var opponent in OpponentsCards)
+        {
+            opponent.readyToggle.isOn = false;
+            opponent.dice.PickUp();
+        }
+        
         yield return new WaitForSeconds(2);
         resolutionAnimator.SetTrigger(AnimTriggerRespiteFadeOut);
         yield return new WaitForSeconds(1);
@@ -578,7 +592,7 @@ public class GameManager : MonoBehaviour
             opponentCard.Result = opponentCard.secretResult;
             opponentsResult.Add(opponentCard.Result);
         }
-        
+
         var isMax = Result >= opponentsResult.Max();
         var isPassed = Result >= eventsDeck.currentCard.Difficulty;
         var isMin = Result <= opponentsResult.Min();
@@ -669,6 +683,12 @@ public class GameManager : MonoBehaviour
         while (!rewardButtons.TrueForAll(x => !x.interactable))
             yield return null;
 
+        foreach (var opponent in OpponentsCards)
+        {
+            opponent.readyToggle.isOn = false;
+            opponent.dice.PickUp();
+        }
+        
         yield return new WaitForSeconds(2);
         resolutionAnimator.SetTrigger(AnimTriggerFadeOut);
         yield return new WaitForSeconds(1);

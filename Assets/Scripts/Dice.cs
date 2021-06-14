@@ -7,7 +7,7 @@ public class Dice : MonoBehaviour
 {
     public Image topFace;
 
-    public List<Sprite> faces; 
+    public List<Sprite> faces;
 
     public int result;
 
@@ -21,6 +21,9 @@ public class Dice : MonoBehaviour
         topFace.enabled = true;
         result = Random.Range(1, 6);
         topFace.sprite = faces[(result - 1) * 4 + Random.Range(0, 4)];
+
+        ServerManager.MessagesToSend.Add(new ServerManager.Msg
+            {topic = "actions", payload = new List<string> {"Roll", GameManager.LocalPlayer.name, result.ToString()}});
     }
 
     public void Throw(int forceResult)

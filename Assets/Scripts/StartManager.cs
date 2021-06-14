@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class StartManager : MonoBehaviour
 {
@@ -178,6 +179,12 @@ public class StartManager : MonoBehaviour
         deleteButton.interactable = ImHost;
         beginButton.interactable = ImHost;
 
+        var urlWaitMe = $"{Server.BaseUrl}/lands/{ServerManager.Land}/realms/{roomInput.text}/properties/STARTED";
+        var requestWaitMe =
+            Server.PostRequest(urlWaitMe, new RealmPropertiesData {values = new List<string> {"false"}});
+        while (!requestWaitMe.isDone) yield return null;
+        Server.GetResponse<RealmPropertiesResponse>(requestWaitMe);
+
         selectionPanel.SetActive(true);
         while (selectionPanel.activeSelf) yield return null;
 
@@ -307,8 +314,23 @@ public class StartManager : MonoBehaviour
     private void Begin()
     {
         loadingImage.SetActive(true);
-        var urlChars = $"{Server.BaseUrl}/lands/{ServerManager.Land}/realms/{roomInput.text}/properties/STARTED";
-        Server.PostRequest(urlChars, new RealmPropertiesData {values = new List<string> {"true"}});
+        StartCoroutine(BeginRequest());
+    }
+
+    private IEnumerator BeginRequest()
+    {
+        EventsDeck.Sequence = Enumerable.Range(0, 16).OrderBy(i => Random.value).ToList();
+        var value = string.Join(",", EventsDeck.Sequence.Select(x => x.ToString()).ToArray());
+        var urlSequence = $"{Server.BaseUrl}/lands/{ServerManager.Land}/realms/{roomInput.text}/properties/SEQUENCE";
+        var requestSequence =
+            Server.PostRequest(urlSequence, new RealmPropertiesData {values = new List<string> {value}});
+        while (!requestSequence.isDone) yield return null;
+        Server.GetResponse<RealmPropertiesResponse>(requestSequence);
+
+        var url = $"{Server.BaseUrl}/lands/{ServerManager.Land}/realms/{roomInput.text}/properties/STARTED";
+        var request = Server.PostRequest(url, new RealmPropertiesData {values = new List<string> {"true"}});
+        while (!request.isDone) yield return null;
+        Server.GetResponse<RealmPropertiesResponse>(request);
     }
 
     private void RefreshLobby()
@@ -369,6 +391,13 @@ public class StartManager : MonoBehaviour
 
             Debug.Log("Starting");
             loadingImage.SetActive(true);
+
+            var urlSequence =
+                $"{Server.BaseUrl}/lands/{ServerManager.Land}/realms/{roomInput.text}/properties?name=SEQUENCE";
+            var requestSequence = Server.GetRequest(urlSequence);
+            while (!requestSequence.isDone) yield return null;
+            var responseSequence = Server.GetResponse<RealmPropertiesResponse>(requestSequence);
+            EventsDeck.Sequence = responseSequence.properties[0].value.Split(',').Select(x => int.Parse(x)).ToList();
 
             var localCharacterBlueprint = chars[charIndex];
             GameManager.LocalPlayer = new Player

@@ -15,4 +15,5 @@ public class Player
     public int messes;
     public int treasures;
     public bool abilityUsed;
+    public bool inNewTurn = true;
 }

@@ -64,6 +64,9 @@ public class Server
     {
         var request = new UnityWebRequest(url) {method = "PUT"};
         var json = data is string s ? s : JsonUtility.ToJson(data);
+
+        if (GameManager.Debug) Debug.Log($"[Server] Posting: {json}. Url: {request.url}");
+        
         var uploader = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)) {contentType = "application/json"};
         request.uploadHandler = uploader;
         request = AddCommonHeaders(request);
